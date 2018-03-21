@@ -63,7 +63,7 @@ public class HttpUtils {
         instance.pastePacket(packet);
         Request.Builder builder = instance.builder(packet, false);
         builder.post(instance.createBody(packet));
-        return instance.executeOnMainThread(builder.get(), (String) packet.findExtraData(Packet.PACKET_NAME));
+        return instance.executeOnMainThread(builder, (String) packet.findExtraData(Packet.PACKET_NAME));
     }
 
     public static void post(Packet packet, Callback callback) {
@@ -71,7 +71,7 @@ public class HttpUtils {
         instance.pastePacket(packet);
         Request.Builder builder = instance.builder(packet, false);
         builder.post(instance.createBody(packet));
-        instance.executeOnNewThread(builder.get(), packet.getExtraData(), callback);
+        instance.executeOnNewThread(builder, packet.getExtraData(), callback);
     }
 
     public static Receipt upload(Packet packet, ProgressCallback callback) {
