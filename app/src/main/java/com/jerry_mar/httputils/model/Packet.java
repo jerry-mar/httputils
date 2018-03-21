@@ -11,7 +11,7 @@ public class Packet {
     public static final String PACKET_NAME = "PACKET_NAME";
     private String url;
     private String json;
-    private List<Part> parameter;
+    private List<Part> parameter = new ArrayList<>();
     private Map<String, String> header;
     private Map<String, Object> extraData;
     private boolean noCache;
@@ -20,14 +20,11 @@ public class Packet {
 
     public Packet(String url, String simpleName) {
         this.url = url;
+        addExtraData(PACKET_NAME, simpleName);
     }
 
     public void setId(int id) {
         addExtraData(PACKET_ID, id);
-    }
-
-    public void getSimpleName(String name) {
-        addExtraData(PACKET_NAME, name);
     }
 
     public String getUrl() {
@@ -48,9 +45,6 @@ public class Packet {
         return parameter;
     }
     public void addParameter(String name, Object value) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         String data = "";
         if (value != null) {
             data = value.toString();
@@ -58,39 +52,22 @@ public class Packet {
         parameter.add(new Part(name, data));
     }
     public void addParameter(String name, File data) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         parameter.add(new Part(name, data));
     }
     public void addParameter(String name, File data, String fileName) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         parameter.add(new Part(name, data, fileName));
     }
     public void addParameter(String name, byte[] bytes, String fileName) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         parameter.add(new Part(name, bytes, fileName));
     }
     public void addParameter(String name, String msg, String fileName) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         parameter.add(new Part(name, msg, fileName));
     }
     public void addParameter(String name, Object target, String fileName, String type, long size) {
-        if(parameter == null) {
-            parameter = new ArrayList<>();
-        }
         parameter.add(new Part(name, target, fileName, type, size));
     }
     public void removeParameter(String name) {
-        if(parameter == null) {
-            parameter.remove(new Part(name, (String) null));
-        }
+        parameter.remove(new Part(name, (String) null));
     }
 
     public Map<String, String> getHeader() {
