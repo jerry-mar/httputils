@@ -264,9 +264,7 @@ public class HttpUtils {
     private void executeOnNewThread(Request.Builder builder, Map<String, Object> extraData, Callback callback) {
         Call call = instance.core.newCall(builder.build());
         RequestTask task = new RequestTask(extraData, callback);
-        if (extraData != null) {
-            TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
-        }
+        TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
         callback.onPreExecute();
         call.enqueue(task);
     }
@@ -296,9 +294,7 @@ public class HttpUtils {
                         Map<String, Object> extraData, AsyncCallback callback) {
         Call call = instance.core.newCall(builder.build());
         RequestTask task = new RequestTask(saveFile, extraData, callback);
-        if (extraData != null) {
-            TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
-        }
+        TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
         callback.onPreExecute();
         call.enqueue(task);
     }

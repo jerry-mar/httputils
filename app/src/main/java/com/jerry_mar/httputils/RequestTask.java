@@ -23,22 +23,20 @@ public class RequestTask implements okhttp3.Callback, ProgressCallback {
         @Override
         public void handleMessage(Message msg) {
             RequestTask task = (RequestTask) msg.obj;
+            String name = receipt.getSimpleName();
             switch (msg.what) {
                 case 0x00 :
-                    if (extraData == null || TaskUtils.removeTask((String)
-                            extraData.get(Packet.PACKET_NAME), task)) {
+                    if (TaskUtils.removeTask(name, task)) {
                         task.onError();
                     }
                     break;
                 case 0x01 :
-                    if (extraData == null || TaskUtils.removeTask((String)
-                            extraData.get(Packet.PACKET_NAME), task)) {
+                    if (TaskUtils.removeTask(name, task)) {
                         task.onFinish();
                     }
                     break;
                 case 0x02 :
-                    if (extraData == null || TaskUtils.contains((String)
-                            extraData.get(Packet.PACKET_NAME), task)) {
+                    if (TaskUtils.contains(name, task)) {
                         task.updateProgress(msg.arg1, msg.arg2);
                     }
                     break;

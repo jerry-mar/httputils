@@ -50,11 +50,9 @@ public class Receipt {
     public Receipt(Builder builder, File saveFile, Map<String, Object> extraData) {
         this(builder);
         this.saveFile = saveFile;
-        if (extraData != null) {
-            id = (Integer) extraData.remove(Packet.PACKET_ID);
-            simpleName = (String) extraData.remove(Packet.PACKET_NAME);
-            this.extraData = extraData;
-        }
+        id = (Integer) extraData.remove(Packet.PACKET_ID);
+        simpleName = (String) extraData.remove(Packet.PACKET_NAME);
+        this.extraData = extraData;
     }
 
     public boolean isSuccessful() {
