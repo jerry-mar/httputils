@@ -17,10 +17,8 @@ public class TaskUtils {
 
     static void addTask(String key, RequestTask task) {
         TaskUtils instance = getInstance();
-        List<RequestTask> list;
-        if (instance.stack.containsKey(key)) {
-           list = instance.stack.get(key);
-        } else {
+        List<RequestTask> list = instance.stack.get(key);
+        if (list == null) {
             list = new ArrayList<>();
             instance.stack.put(key, list);
         }
