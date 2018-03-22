@@ -50,6 +50,8 @@ public class RequestTask implements okhttp3.Callback, ProgressCallback {
     private Receipt receipt;
     private Map<Integer, Long> speed = new HashMap<>();
 
+    public RequestTask() {}
+
     public RequestTask(Map<String, Object> extraData, Callback callback) {
         this.extraData = extraData;
         this.callback = callback;

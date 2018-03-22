@@ -247,7 +247,8 @@ public class HttpUtils {
 
     private Receipt executeOnMainThread(Request.Builder builder, String simpale) {
         Receipt result;
-        TaskUtils.addTask(simpale, null);
+        RequestTask task = new RequestTask();
+        TaskUtils.addTask(simpale, task);
         Call call = instance.core.newCall(builder.build());
         try {
             Response response = call.execute();
@@ -255,7 +256,7 @@ public class HttpUtils {
         } catch (IOException e) {
             result = new Receipt.Builder(e).build();
         }
-        if (!TaskUtils.removeTask(simpale, null)) {
+        if (!TaskUtils.removeTask(simpale, task)) {
             result.code(Receipt.ERROR_RELEASE);
         }
         return result;
@@ -271,7 +272,8 @@ public class HttpUtils {
 
     private Receipt executeOnMainThread(Request.Builder builder, File saveFile, ProgressCallback callback, String simpale) {
         Receipt result;
-        TaskUtils.addTask(simpale, null);
+        RequestTask task = new RequestTask();
+        TaskUtils.addTask(simpale, task);
         Call call = instance.core.newCall(builder.build());
         try {
             Response response = call.execute();
@@ -284,7 +286,7 @@ public class HttpUtils {
         } catch (IOException e) {
             result = new Receipt.Builder(e).build();
         }
-        if (!TaskUtils.removeTask(simpale, null)) {
+        if (!TaskUtils.removeTask(simpale, task)) {
             result.code(Receipt.ERROR_RELEASE);
         }
         return result;

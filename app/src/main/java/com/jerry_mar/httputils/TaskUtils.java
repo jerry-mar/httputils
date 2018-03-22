@@ -1,6 +1,7 @@
 package com.jerry_mar.httputils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +20,7 @@ public class TaskUtils {
         TaskUtils instance = getInstance();
         List<RequestTask> list = instance.stack.get(key);
         if (list == null) {
-            list = new ArrayList<>();
+            list = new LinkedList<>();
             instance.stack.put(key, list);
         }
         list.add(task);
