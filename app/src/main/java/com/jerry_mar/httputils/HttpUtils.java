@@ -255,7 +255,7 @@ public class HttpUtils {
         } catch (IOException e) {
             result = new Receipt.Builder(e).build();
         }
-        if (TaskUtils.removeTask(simpale, null)) {
+        if (!TaskUtils.removeTask(simpale, null)) {
             result.code(Receipt.ERROR_RELEASE);
         }
         return result;
@@ -284,7 +284,7 @@ public class HttpUtils {
         } catch (IOException e) {
             result = new Receipt.Builder(e).build();
         }
-        if (TaskUtils.removeTask(simpale, null)) {
+        if (!TaskUtils.removeTask(simpale, null)) {
             result.code(Receipt.ERROR_RELEASE);
         }
         return result;
