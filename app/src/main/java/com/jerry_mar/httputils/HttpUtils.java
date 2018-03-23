@@ -314,8 +314,8 @@ public class HttpUtils {
             } else {
                 cache = new CacheControl.Builder().build();
             }
-            if (packet.cache()) {
-                cache.onlyIfCached();
+            if (!packet.cache()) {
+                cache.noStore();
             }
         }
         builder.cacheControl(cache);

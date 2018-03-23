@@ -15,7 +15,7 @@ public class Packet {
     private Map<String, String> header;
     private Map<String, Object> extraData;
     private boolean noCache;
-    private boolean cache;
+    private boolean cached = true;
     private File saveFile;
 
     public Packet(String url, String simpleName) {
@@ -116,11 +116,11 @@ public class Packet {
     }
 
     public void cache(boolean cache) {
-        this.cache = cache;
+        this.cached = cache;
     }
 
     public boolean cache() {
-        return cache;
+        return cached;
     }
 
     public File getSaveFile() {
