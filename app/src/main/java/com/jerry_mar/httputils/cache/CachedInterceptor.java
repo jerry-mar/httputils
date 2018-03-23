@@ -51,17 +51,6 @@ public class CachedInterceptor implements Interceptor {
                 }
             }
 
-            if(request.method().toUpperCase().equals("GET")) {
-                try {
-                    Field field = request.getClass().getDeclaredField("cacheControl");
-                    field.setAccessible(true);
-                    field.set(request, new CacheControl.Builder().build());
-                    field.setAccessible(false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
             Headers header = response.headers();
             Headers.Builder headerBuilder = header.newBuilder();
             headerBuilder.removeAll("Pragma");

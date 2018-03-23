@@ -6,6 +6,7 @@ import com.jerry_mar.httputils.NetworkUtils;
 
 import java.io.IOException;
 
+import okhttp3.CacheControl;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -39,6 +40,11 @@ public class CacheInterceptor implements Interceptor {
                 params.delete(params.length() - 1, params.length());
                 builder.url(request.url().toString() + params.toString());
             }
+            CacheControl.Builder cache = new CacheControl.Builder();
+            if (request.cacheControl().noStore()) {
+                cache.noStore();
+            }
+            builder.cacheControl(cache.build());
             builder.get();
             request = builder.build();
         }
