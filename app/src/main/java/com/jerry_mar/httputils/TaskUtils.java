@@ -1,6 +1,5 @@
 package com.jerry_mar.httputils;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,13 @@ public class TaskUtils {
 
     public static void removeTask(String key) {
         TaskUtils instance = getInstance();
-        instance.stack.remove(key);
+        List<RequestTask> task = instance.stack.get(key);
+        if (task != null) {
+            instance.stack.remove(key);
+            for (int i = 0; i < task.size(); i++) {
+                task.get(i).destroy();
+            }
+        }
     }
 
     public static boolean removeTask(String key, RequestTask task) {

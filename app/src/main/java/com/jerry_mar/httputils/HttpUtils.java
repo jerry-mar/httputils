@@ -247,9 +247,9 @@ public class HttpUtils {
 
     private Receipt executeOnMainThread(Request.Builder builder, String simpale) {
         Receipt result;
-        RequestTask task = new RequestTask();
-        TaskUtils.addTask(simpale, task);
         Call call = instance.core.newCall(builder.build());
+        RequestTask task = new RequestTask(call);
+        TaskUtils.addTask(simpale, task);
         try {
             Response response = call.execute();
             result = new Receipt.Builder(response).build();
@@ -264,7 +264,7 @@ public class HttpUtils {
 
     private void executeOnNewThread(Request.Builder builder, Map<String, Object> extraData, Callback callback) {
         Call call = instance.core.newCall(builder.build());
-        RequestTask task = new RequestTask(extraData, callback);
+        RequestTask task = new RequestTask(extraData, call, callback);
         TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
         callback.onPreExecute();
         call.enqueue(task);
@@ -272,9 +272,9 @@ public class HttpUtils {
 
     private Receipt executeOnMainThread(Request.Builder builder, File saveFile, ProgressCallback callback, String simpale) {
         Receipt result;
-        RequestTask task = new RequestTask();
-        TaskUtils.addTask(simpale, task);
         Call call = instance.core.newCall(builder.build());
+        RequestTask task = new RequestTask(call);
+        TaskUtils.addTask(simpale, task);
         try {
             Response response = call.execute();
             long total = response.body().contentLength();
@@ -295,7 +295,7 @@ public class HttpUtils {
     private void executeOnNewThread(Request.Builder builder, File saveFile,
                         Map<String, Object> extraData, AsyncCallback callback) {
         Call call = instance.core.newCall(builder.build());
-        RequestTask task = new RequestTask(saveFile, extraData, callback);
+        RequestTask task = new RequestTask(saveFile, extraData, call, callback);
         TaskUtils.addTask((String) extraData.get(Packet.PACKET_NAME), task);
         callback.onPreExecute();
         call.enqueue(task);

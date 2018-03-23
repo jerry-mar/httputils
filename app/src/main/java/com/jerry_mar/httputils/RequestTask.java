@@ -49,17 +49,22 @@ public class RequestTask implements okhttp3.Callback, ProgressCallback {
     private Callback callback;
     private Receipt receipt;
     private Map<Integer, Long> speed = new HashMap<>();
+    private Call call;
 
-    public RequestTask() {}
+    public RequestTask(Call call) {
+        this.call = call;
+    }
 
-    public RequestTask(Map<String, Object> extraData, Callback callback) {
+    public RequestTask(Map<String, Object> extraData, Call call, Callback callback) {
         this.extraData = extraData;
+        this.call = call;
         this.callback = callback;
     }
 
-    public RequestTask(File saveFile, Map<String, Object> extraData, AsyncCallback callback) {
+    public RequestTask(File saveFile, Map<String, Object> extraData, Call call, AsyncCallback callback) {
         this.saveFile = saveFile;
         this.extraData = extraData;
+        this.call = call;
         this.callback = callback;
     }
 
@@ -113,5 +118,11 @@ public class RequestTask implements okhttp3.Callback, ProgressCallback {
         this.speed.put(msg.arg2, speed);
         msg.what = 0x02;
         handler.sendMessage(msg);
+    }
+
+    public void destroy() {
+        if (call != null) {
+            call.cancel();
+        }
     }
 }
