@@ -312,10 +312,11 @@ public class HttpUtils {
             if (packet.noCache()) {
                 cache = CacheControl.FORCE_NETWORK;
             } else {
-                cache = new CacheControl.Builder().build();
-            }
-            if (!packet.cache()) {
-                cache.noStore();
+                CacheControl.Builder cacheBuilder = new CacheControl.Builder();
+                if (!packet.cache()) {
+                    cacheBuilder.noStore();
+                }
+                cache = cacheBuilder.build();
             }
         }
         builder.cacheControl(cache);
