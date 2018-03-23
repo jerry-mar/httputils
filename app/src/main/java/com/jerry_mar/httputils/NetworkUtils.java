@@ -10,6 +10,8 @@ import android.net.NetworkInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,8 +20,8 @@ public class NetworkUtils extends BroadcastReceiver {
     public static final int TYPE_WIFI = ConnectivityManager.TYPE_WIFI;
     public static final int TYPE_MOBILE = ConnectivityManager.TYPE_MOBILE;
 
-    private static Map<Context, BroadcastReceiver> receiverMaps;
-    private static Map<Context, OnNetworkListener> listenerMaps;
+    private static List<Callback> listener;
+    private static NetworkUtils instance;
 
     @SuppressLint("MissingPermission")
     public static boolean isNetworkConnected(Context context) {
@@ -71,23 +73,29 @@ public class NetworkUtils extends BroadcastReceiver {
         return type;
     }
 
-    public static void registerReceiver(Context context, OnNetworkListener listener) {
-        if(receiverMaps == null) {
-            receiverMaps = new HashMap<>();
-            listenerMaps = new HashMap<>();
+    public static void register(Context context) {
+        if (instance == null) {
+            listener = new LinkedList<>();
+            instance = new NetworkUtils();
+            IntentFilter intent = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            context.registerReceiver(instance, intent);
         }
-
-        IntentFilter intent = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        NetworkUtils receiver = new NetworkUtils();
-        receiverMaps.put(context, receiver);
-        listenerMaps.put(context, listener);
-        context.registerReceiver(receiver, intent);
     }
 
-    public static void unregisterReceiver(Context context) {
-        BroadcastReceiver receiver = receiverMaps.remove(context);
-        listenerMaps.remove(context);
-        context.unregisterReceiver(receiver);
+    public static void unregister(Context context) {
+        if (instance != null) {
+            listener.clear();
+            context.unregisterReceiver(instance);
+            instance = null;
+        }
+    }
+
+    public static void register(Callback c) {
+        listener.add(c);
+    }
+
+    public static void unregister(Callback c) {
+        listener.remove(c);
     }
 
     @Override
@@ -97,16 +105,14 @@ public class NetworkUtils extends BroadcastReceiver {
     }
 
     private void execute(int type) {
-        Set<Context> set = listenerMaps.keySet();
-        Iterator<Context> iterator = set.iterator();
+        Iterator<Callback> iterator = listener.iterator();
         while (iterator.hasNext()) {
-            Context context = iterator.next();
-            OnNetworkListener listener = listenerMaps.get(context);
-            listener.OnNetworkListener(type);
+            Callback c = iterator.next();
+            c.execute(type);
         }
     }
 
-    public static interface OnNetworkListener {
-        void OnNetworkListener(int type);
+    public static interface Callback {
+        void execute(int type);
     }
 }
