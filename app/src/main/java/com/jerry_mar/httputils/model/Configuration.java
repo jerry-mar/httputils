@@ -1,10 +1,14 @@
 package com.jerry_mar.httputils.model;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+
+import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.CookieJar;
 import okhttp3.Interceptor;
@@ -20,11 +24,15 @@ public class Configuration {
     private List<Interceptor> networkInterceptors = new ArrayList<>();
     private List<Interceptor> interceptors = new ArrayList<>();
 
-    private CookieJar cookieJar = null;//new CookieManager(new CookieStoreImpl());
+    private CookieJar cookieJar = CookieJar.NO_COOKIES;//new CookieManager(new CookieStoreImpl());
     private Cache cache;
+    private Authenticator authenticator;
+    private List<InputStream> certificates = new ArrayList<>();
+    private HostnameVerifier verifier;
 
     private boolean retryOnConnectionFailure = true;
     private boolean followRedirects = true;
+    private boolean followSslRedirects = true;
 
     public long getConnectTimeout() {
         return connectTimeout;
@@ -101,5 +109,33 @@ public class Configuration {
     }
     public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
+    }
+
+    public boolean isFollowSslRedirects() {
+        return followSslRedirects;
+    }
+    public void setFollowSslRedirects(boolean followSslRedirects) {
+        this.followSslRedirects = followSslRedirects;
+    }
+
+    public Authenticator getAuthenticator() {
+        return authenticator;
+    }
+    public void setAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    public List<InputStream> getCertificates() {
+        return certificates;
+    }
+    public void addCertificate(InputStream certificate) {
+        this.certificates.add(certificate);
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return verifier;
+    }
+    public void setVHostnameVerifier(HostnameVerifier verifier) {
+        this.verifier = verifier;
     }
 }

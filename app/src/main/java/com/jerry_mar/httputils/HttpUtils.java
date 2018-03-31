@@ -10,10 +10,14 @@ import com.jerry_mar.httputils.model.Receipt;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+
+import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
@@ -142,6 +146,21 @@ public class HttpUtils {
             builder.cache(cache);
         }
 
+        List<InputStream> certificates = config.getCertificates();
+        if (certificates != null && certificates.size() > 0) {
+            CertificateManager.bind(builder, certificates);
+        }
+
+        HostnameVerifier verifier = config.getHostnameVerifier();
+        if (verifier != null) {
+            builder.hostnameVerifier(config.getHostnameVerifier());
+        }
+
+        Authenticator authenticator = config.getAuthenticator();
+        if (authenticator != null){
+            builder.authenticator(authenticator);
+        }
+
         List<Interceptor> interceptors = config.getInterceptors();
         if(interceptors != null) {
             builder.interceptors().addAll(interceptors);
@@ -154,6 +173,7 @@ public class HttpUtils {
 
         builder.followRedirects(config.isFollowRedirects());
         builder.retryOnConnectionFailure(config.isRetryOnConnectionFailure());
+        builder.followSslRedirects(config.isFollowSslRedirects());
 
         core = builder.build();
     }

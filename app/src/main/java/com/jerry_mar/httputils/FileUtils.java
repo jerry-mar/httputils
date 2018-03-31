@@ -9,8 +9,8 @@ import java.io.InputStream;
 
 import okhttp3.Response;
 
-public class FileUtils {
-    public static void saveFile(Response response, File saveFile, ProgressCallback callback) throws IOException {
+class FileUtils {
+    static void saveFile(Response response, File saveFile, ProgressCallback callback) throws IOException {
         InputStream in = null;
         byte[] buf = new byte[2048];
         int len;
