@@ -102,6 +102,11 @@ public class Receipt {
         byte[] source;
         File saveFile;
 
+        public Builder(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
         public Builder(IOException e) {
             if (e instanceof SocketTimeoutException || (e instanceof InterruptedIOException &&
                     TextUtils.equals(e.getMessage(), "timeout"))) {

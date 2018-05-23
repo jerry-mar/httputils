@@ -35,6 +35,7 @@ import okhttp3.Response;
 
 public class HttpUtils {
     private static HttpUtils instance;
+    private static String error = "网络模块未初始化,请授权网络存储权限!";
 
     public static HttpUtils getInstance() {
         return instance;
@@ -48,6 +49,9 @@ public class HttpUtils {
 
     public static Receipt get(Packet packet) {
         HttpUtils instance = getInstance();
+        Receipt receipt = check(instance, null);
+        if (receipt != null)
+            return receipt;
         instance.pastePacket(packet);
         instance.compilePacket(packet);
         Request.Builder builder = instance.builder(packet, false);
@@ -56,14 +60,19 @@ public class HttpUtils {
 
     public static void get(Packet packet, Callback callback) {
         HttpUtils instance = getInstance();
-        instance.pastePacket(packet);
-        instance.compilePacket(packet);
-        Request.Builder builder = instance.builder(packet, false);
-        instance.executeOnNewThread(builder.get(), packet.getExtraData(), callback);
+        if (check(instance, callback) == null) {
+            instance.pastePacket(packet);
+            instance.compilePacket(packet);
+            Request.Builder builder = instance.builder(packet, false);
+            instance.executeOnNewThread(builder.get(), packet.getExtraData(), callback);
+        }
     }
 
     public static Receipt post(Packet packet) {
         HttpUtils instance = getInstance();
+        Receipt receipt = check(instance, null);
+        if (receipt != null)
+            return receipt;
         instance.pastePacket(packet);
         Request.Builder builder = instance.builder(packet, false);
         builder.post(instance.createBody(packet));
@@ -72,14 +81,19 @@ public class HttpUtils {
 
     public static void post(Packet packet, Callback callback) {
         HttpUtils instance = getInstance();
-        instance.pastePacket(packet);
-        Request.Builder builder = instance.builder(packet, false);
-        builder.post(instance.createBody(packet));
-        instance.executeOnNewThread(builder, packet.getExtraData(), callback);
+        if (check(instance, callback) == null) {
+            instance.pastePacket(packet);
+            Request.Builder builder = instance.builder(packet, false);
+            builder.post(instance.createBody(packet));
+            instance.executeOnNewThread(builder, packet.getExtraData(), callback);
+        }
     }
 
     public static Receipt upload(Packet packet, ProgressCallback callback) {
         HttpUtils instance = getInstance();
+        Receipt receipt = check(instance, null);
+        if (receipt != null)
+            return receipt;
         instance.pastePacket(packet);
         Request.Builder builder = instance.builder(packet, true);
         builder.post(instance.createMultipartBody(packet, callback));
@@ -88,15 +102,20 @@ public class HttpUtils {
 
     public static void upload(Packet packet, Callback callback) {
         HttpUtils instance = getInstance();
-        instance.pastePacket(packet);
-        Request.Builder builder = instance.builder(packet, true);
-        builder.post(instance.createMultipartBody(packet, callback instanceof
-                ProgressCallback ? (ProgressCallback) callback : null));
-        instance.executeOnNewThread(builder, packet.getExtraData(), callback);
+        if (check(instance, callback) == null) {
+            instance.pastePacket(packet);
+            Request.Builder builder = instance.builder(packet, true);
+            builder.post(instance.createMultipartBody(packet, callback instanceof
+                    ProgressCallback ? (ProgressCallback) callback : null));
+            instance.executeOnNewThread(builder, packet.getExtraData(), callback);
+        }
     }
 
     public static Receipt download(Packet packet, ProgressCallback callback) {
         HttpUtils instance = getInstance();
+        Receipt receipt = check(instance, null);
+        if (receipt != null)
+            return receipt;
         instance.pastePacket(packet);
         Request.Builder builder = instance.builder(packet, true);
         if (packet.getParameter() != null) {
@@ -107,16 +126,28 @@ public class HttpUtils {
 
     public static void download(Packet packet, AsyncCallback callback) {
         HttpUtils instance = getInstance();
-        instance.pastePacket(packet);
-        Request.Builder builder = instance.builder(packet, true);
-        if (packet.getParameter() != null) {
-            builder.post(instance.createMultipartBody(packet, null));
+        if (check(instance, callback) == null) {
+            instance.pastePacket(packet);
+            Request.Builder builder = instance.builder(packet, true);
+            if (packet.getParameter() != null) {
+                builder.post(instance.createMultipartBody(packet, null));
+            }
+            instance.executeOnNewThread(builder, packet.getSaveFile(), packet.getExtraData(), callback);
         }
-        instance.executeOnNewThread(builder, packet.getSaveFile(), packet.getExtraData(), callback);
     }
 
     public static void removeTask(String simpleName) {
         TaskUtils.removeTask(simpleName);
+    }
+
+    private static Receipt check(HttpUtils instance, Callback callback) {
+        if (instance == null) {
+            Receipt receipt = new Receipt(new Receipt.Builder(-1024, error));
+            if (callback != null) {
+                callback.onError(-1024, error);
+            }
+            return receipt;
+        }
     }
 
     private OkHttpClient core;
