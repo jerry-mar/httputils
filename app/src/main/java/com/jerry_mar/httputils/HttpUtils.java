@@ -148,6 +148,7 @@ public class HttpUtils {
             }
             return receipt;
         }
+        return null;
     }
 
     private OkHttpClient core;
